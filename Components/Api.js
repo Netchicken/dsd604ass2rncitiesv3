@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SafeAreaView, StyleSheet, Text, View, ToastAndroid } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View, ToastAndroid, Button } from "react-native";
 
-import { createCities } from "../Assets/citiesSmall"; // Import the function to create cities
+import { createCities, countryDataSmall } from "../assets/citiesSmall"; // Import the function to create cities
 import SelectDropdown from "react-native-select-dropdown";
 
 export default function Api({ navigation, route }) {
@@ -112,6 +112,11 @@ export default function Api({ navigation, route }) {
           <Text style={styles.text}>The Min Temperature is {cityDetails[4]}C</Text>
           <Text style={styles.text}>The Description is {cityDetails[5]}</Text>
         </View>
+      </View>
+
+      {/* Navigation Buttons at the bottom */}
+      <View style={{ flexDirection: "row", justifyContent: "space-around", paddingVertical: 20, width: "100%" }}>
+        <Button title="Home" onPress={() => navigation.navigate("Guess The City")} color="#1976d2" />
       </View>
     </SafeAreaView>
   );

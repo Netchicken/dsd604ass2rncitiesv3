@@ -1,12 +1,12 @@
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { SafeAreaView, ScrollView, Text, View, Button, ToastAndroid, ImageBackground } from "react-native";
-import { countryDataSmall, dropdownCitiesData } from "../Assets/citiesSmall"; // Import the function to create cities
+import { countryDataSmall, dropdownCitiesData } from "../assets/citiesSmall"; // Import the function to create cities
 //import SelectDropdown from "react-native-select-dropdown";
 import { useGamePlayStyles } from "../AllStyles/gamePlayStyles";
 import { randomNumberGenerator } from "./gamePlayOperations"; // Import the random number generator function
 
-export default function GamePlay() {
+export default function GamePlay({ navigation }) {
   const styles = useGamePlayStyles();
   // console.log("countryDataSmallGamePlay", countryDataSmall);
   // console.log("dropdownCitiesData()Gameplay", dropdownCitiesData());
@@ -86,7 +86,7 @@ export default function GamePlay() {
     </View>
   );
   return (
-    <ImageBackground resizeMode="cover" source={require("../Assets/bgImage.png")} style={styles.image}>
+    <ImageBackground resizeMode="cover" source={require("../assets/bgImage.png")} style={styles.image}>
       <View style={styles.container}>
         <SafeAreaView>
           <ScrollView>
@@ -120,6 +120,13 @@ export default function GamePlay() {
                   ))}
                 </ScrollView>
               </View>
+            </View>
+
+            {/* Navigation Buttons at the bottom */}
+            <View
+              style={[styles.container, { flexDirection: "row", justifyContent: "space-around", paddingVertical: 20 }]}
+            >
+              <Button title="Weather" onPress={() => navigation.navigate("Weather")} color="#1976d2" />
             </View>
           </ScrollView>
         </SafeAreaView>

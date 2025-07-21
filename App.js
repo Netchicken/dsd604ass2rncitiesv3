@@ -1,20 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import GamePlay from "./Components/GamePlay";
+import Api from "./Components/Api";
+import { ContextProvider } from "./Operations/Context";
 
-export default function App() {
+const Stack = createStackNavigator();
+
+const App = () => {
+  // const styles = useAppStyles();
+  console.log("App component rendered");
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <ContextProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Guess The City"
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: "#1976d2",
+              },
+              headerTintColor: "#fff",
+              headerTitleStyle: {
+                fontWeight: "bold",
+              },
+              headerTitleAlign: "center",
+            }}
+          >
+            <Stack.Screen name="Guess The City" component={GamePlay} options={{ title: "Home" }} />
+            <Stack.Screen name="Weather" component={Api} options={{ title: "Weather" }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ContextProvider>
+    </>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
