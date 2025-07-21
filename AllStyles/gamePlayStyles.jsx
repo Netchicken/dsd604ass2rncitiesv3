@@ -226,15 +226,24 @@ export const useGamePlayStyles = () => {
         },
         resultsContainer: {
           flexDirection: "row",
-          alignContent: "space-between",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginTop: vs(20),
+        },
+        correctCitiesContainer: {
+          flex: 1,
+          marginRight: rs(10),
+        },
+        wrongCitiesContainer: {
+          flex: 1,
+          marginLeft: rs(10),
         },
         wrongCitiesHeading: {
-          marginLeft: rs(50),
-          alignSelf: "flex-end",
+          textAlign: "right",
         },
         wrongCitiesItem: {
-          marginLeft: rs(50),
-          alignSelf: "flex-end",
+          textAlign: "right",
+          paddingRight: rs(20),
         },
         navigationContainer: {
           flexDirection: "row",

@@ -165,7 +165,7 @@ export default function GamePlay({ navigation }) {
             </View>
             {/* Results: Correct and Wrong Cities */}
             <View style={[styles.container, styles.resultsContainer]}>
-              <View style={styles.resultcontainer}>
+              <View style={[styles.resultcontainer, styles.correctCitiesContainer]}>
                 <ScrollView>
                   <Text style={styles.headingoutome}>Correct Cities</Text>
                   {citiesCorrect.map((item, index) => (
@@ -176,7 +176,7 @@ export default function GamePlay({ navigation }) {
                 </ScrollView>
               </View>
 
-              <View style={styles.resultcontainer}>
+              <View style={[styles.resultcontainer, styles.wrongCitiesContainer]}>
                 <ScrollView>
                   <Text style={[styles.headingoutome, styles.wrongCitiesHeading]}>Wrong Cities</Text>
                   {citiesWrong.map((item, index) => (
