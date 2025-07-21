@@ -155,6 +155,92 @@ export const useGamePlayStyles = () => {
           fontSize: rs(17),
           fontWeight: "400",
         },
+
+        // New styles extracted from inline styles
+        debugText: {
+          color: "black",
+          fontSize: rs(16),
+          margin: rs(10),
+        },
+        debugTextSmall: {
+          color: "black",
+          fontSize: rs(14),
+          margin: rs(10),
+        },
+        dropdownContainer: {
+          width: "100%",
+          marginVertical: vs(16),
+        },
+        dropdownButton: {
+          width: "80%",
+          height: vs(50),
+          backgroundColor: "#FFF",
+          borderRadius: rs(8),
+          borderWidth: 1,
+          borderColor: "#444",
+          alignSelf: "center",
+          justifyContent: "center",
+          paddingHorizontal: rs(15),
+        },
+        dropdownButtonText: {
+          color: "#444",
+          fontSize: rs(16),
+        },
+        modalOverlay: {
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0,0,0,0.5)",
+        },
+        modalContainer: {
+          backgroundColor: "white",
+          borderRadius: rs(10),
+          padding: rs(20),
+          width: "80%",
+          maxHeight: "70%",
+        },
+        modalTitle: {
+          fontSize: rs(18),
+          fontWeight: "bold",
+          marginBottom: vs(15),
+          textAlign: "center",
+        },
+        cityListItem: {
+          padding: rs(15),
+          borderBottomWidth: 1,
+          borderBottomColor: "#eee",
+        },
+        cityListItemText: {
+          fontSize: rs(16),
+        },
+        modalCancelButton: {
+          marginTop: vs(15),
+          padding: rs(10),
+          backgroundColor: "#1976d2",
+          borderRadius: rs(5),
+          alignItems: "center",
+        },
+        modalCancelButtonText: {
+          color: "white",
+          fontSize: rs(16),
+        },
+        resultsContainer: {
+          flexDirection: "row",
+          alignContent: "space-between",
+        },
+        wrongCitiesHeading: {
+          marginLeft: rs(50),
+          alignSelf: "flex-end",
+        },
+        wrongCitiesItem: {
+          marginLeft: rs(50),
+          alignSelf: "flex-end",
+        },
+        navigationContainer: {
+          flexDirection: "row",
+          justifyContent: "space-around",
+          paddingVertical: vs(20),
+        },
       }),
     []
   );

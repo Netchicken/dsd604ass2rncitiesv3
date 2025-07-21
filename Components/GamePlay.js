@@ -124,32 +124,15 @@ export default function GamePlay({ navigation }) {
             <Button title="Choose a random Country" onPress={onClickChooseCountry} />
 
             {/* Debug info */}
-            <Text style={{ color: "black", fontSize: 16, margin: 10 }}>
-              Cities loaded: {allCities ? allCities.length : 0}
-            </Text>
+            {/* <Text style={styles.debugText}>Cities loaded: {allCities ? allCities.length : 0}</Text>
             {allCities && allCities.length > 0 && (
-              <Text style={{ color: "black", fontSize: 14, margin: 10 }}>
-                First few cities: {allCities.slice(0, 3).join(", ")}
-              </Text>
-            )}
+              <Text style={styles.debugTextSmall}>First few cities: {allCities.slice(0, 3).join(", ")}</Text>
+            )} */}
 
-            <View style={{ width: "100%", marginVertical: 16 }}>
+            <View style={styles.dropdownContainer}>
               {/* Custom Dropdown Button */}
-              <TouchableOpacity
-                style={{
-                  width: "80%",
-                  height: 50,
-                  backgroundColor: "#FFF",
-                  borderRadius: 8,
-                  borderWidth: 1,
-                  borderColor: "#444",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  paddingHorizontal: 15,
-                }}
-                onPress={() => setModalVisible(true)}
-              >
-                <Text style={{ color: "#444", fontSize: 16 }}>{selectedCity || "Choose the city"}</Text>
+              <TouchableOpacity style={styles.dropdownButton} onPress={() => setModalVisible(true)}>
+                <Text style={styles.dropdownButtonText}>{selectedCity || "Choose the city"}</Text>
               </TouchableOpacity>
 
               {/* Modal for City Selection */}
@@ -159,66 +142,29 @@ export default function GamePlay({ navigation }) {
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
               >
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "rgba(0,0,0,0.5)",
-                  }}
-                >
-                  <View
-                    style={{
-                      backgroundColor: "white",
-                      borderRadius: 10,
-                      padding: 20,
-                      width: "80%",
-                      maxHeight: "70%",
-                    }}
-                  >
-                    <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15, textAlign: "center" }}>
-                      Select a City
-                    </Text>
+                <View style={styles.modalOverlay}>
+                  <View style={styles.modalContainer}>
+                    <Text style={styles.modalTitle}>Select a City</Text>
 
                     <FlatList
-                      data={
-                        allCities && allCities.length > 0
-                          ? allCities
-                          : ["London", "Paris", "New York", "Tokyo", "Sydney"]
-                      }
+                      data={allCities}
                       keyExtractor={(item, index) => index.toString()}
                       renderItem={({ item }) => (
-                        <TouchableOpacity
-                          style={{
-                            padding: 15,
-                            borderBottomWidth: 1,
-                            borderBottomColor: "#eee",
-                          }}
-                          onPress={() => handleCitySelect(item)}
-                        >
-                          <Text style={{ fontSize: 16 }}>{item}</Text>
+                        <TouchableOpacity style={styles.cityListItem} onPress={() => handleCitySelect(item)}>
+                          <Text style={styles.cityListItemText}>{item}</Text>
                         </TouchableOpacity>
                       )}
                     />
 
-                    <TouchableOpacity
-                      style={{
-                        marginTop: 15,
-                        padding: 10,
-                        backgroundColor: "#1976d2",
-                        borderRadius: 5,
-                        alignItems: "center",
-                      }}
-                      onPress={() => setModalVisible(false)}
-                    >
-                      <Text style={{ color: "white", fontSize: 16 }}>Cancel</Text>
+                    <TouchableOpacity style={styles.modalCancelButton} onPress={() => setModalVisible(false)}>
+                      <Text style={styles.modalCancelButtonText}>Cancel</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               </Modal>
             </View>
             {/* Results: Correct and Wrong Cities */}
-            <View style={[styles.container, { flexDirection: "row", alignContent: "space-between" }]}>
+            <View style={[styles.container, styles.resultsContainer]}>
               <View style={styles.resultcontainer}>
                 <ScrollView>
                   <Text style={styles.headingoutome}>Correct Cities</Text>
@@ -232,10 +178,10 @@ export default function GamePlay({ navigation }) {
 
               <View style={styles.resultcontainer}>
                 <ScrollView>
-                  <Text style={[styles.headingoutome, { marginLeft: 50, alignSelf: "flex-end" }]}>Wrong Cities</Text>
+                  <Text style={[styles.headingoutome, styles.wrongCitiesHeading]}>Wrong Cities</Text>
                   {citiesWrong.map((item, index) => (
                     <View key={index}>
-                      <Text style={[styles.item, { marginLeft: 50, alignSelf: "flex-end" }]}>{item}</Text>
+                      <Text style={[styles.item, styles.wrongCitiesItem]}>{item}</Text>
                     </View>
                   ))}
                 </ScrollView>
@@ -243,9 +189,7 @@ export default function GamePlay({ navigation }) {
             </View>
 
             {/* Navigation Buttons at the bottom */}
-            <View
-              style={[styles.container, { flexDirection: "row", justifyContent: "space-around", paddingVertical: 20 }]}
-            >
+            <View style={[styles.container, styles.navigationContainer]}>
               <Button title="Weather" onPress={() => navigation.navigate("Weather")} color="#1976d2" />
             </View>
           </ScrollView>
