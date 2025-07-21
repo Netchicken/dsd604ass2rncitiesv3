@@ -1,19 +1,32 @@
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { SafeAreaView, ScrollView, Text, View, Button, ToastAndroid, ImageBackground } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  View,
+  Button,
+  ToastAndroid,
+  ImageBackground,
+  TouchableOpacity,
+  Modal,
+  FlatList,
+} from "react-native";
 import { countryDataSmall, dropdownCitiesData } from "../assets/citiesSmall"; // Import the function to create cities
-//import SelectDropdown from "react-native-select-dropdown";
 import { useGamePlayStyles } from "../AllStyles/gamePlayStyles";
 import { randomNumberGenerator } from "./gamePlayOperations"; // Import the random number generator function
-
+import { Context } from "../Operations/Context"; // Import the context for database operations
 export default function GamePlay({ navigation }) {
   const styles = useGamePlayStyles();
-  // console.log("countryDataSmallGamePlay", countryDataSmall);
-  // console.log("dropdownCitiesData()Gameplay", dropdownCitiesData());
 
   // State for all country data and dropdown cities
   const [allData] = useState(countryDataSmall);
-  const [allCities, setAllCities] = useState(dropdownCitiesData());
+  const [allCities, setAllCities] = useState(() => {
+    console.log("Initializing allCities with dropdownCitiesData()");
+    const cities = dropdownCitiesData();
+    console.log("Cities loaded:", cities?.length, "First few:", cities?.slice(0, 3));
+    return cities;
+  });
   const [gameData, setGameData] = useState({
     CountryName: "Start",
     CapitalName: "Start",
@@ -24,9 +37,12 @@ export default function GamePlay({ navigation }) {
 
   const [selectedCity, setSelectedCity] = useState(null);
   const [number, setNumber] = useState(0); //random number
+  const [modalVisible, setModalVisible] = useState(false);
   // State for correct and wrong answers
   const [citiesCorrect, setCitiesCorrect] = useState([]);
   const [citiesWrong, setCitiesWrong] = useState([]);
+  // Ref for dropdown reset
+  const citiesDropdownRef = useRef({});
 
   // Handler: Load new random country/city for the game
   const onClickChooseCountry = () => {
@@ -51,6 +67,18 @@ export default function GamePlay({ navigation }) {
 
     // Reset selected city
     setSelectedCity(null);
+    setModalVisible(false);
+
+    // Reset dropdown selection
+    if (citiesDropdownRef.current && citiesDropdownRef.current.reset) {
+      citiesDropdownRef.current.reset();
+    }
+  };
+
+  // Handler: Select city from dropdown
+  const handleCitySelect = (city) => {
+    setSelectedCity(city);
+    setModalVisible(false);
   };
 
   // Handler: Check if the selected city is correct or wrong
@@ -95,8 +123,100 @@ export default function GamePlay({ navigation }) {
             {/* Button to choose a random country */}
             <Button title="Choose a random Country" onPress={onClickChooseCountry} />
 
-            <View style={{ width: "100%", marginVertical: 16 }}></View>
+            {/* Debug info */}
+            <Text style={{ color: "black", fontSize: 16, margin: 10 }}>
+              Cities loaded: {allCities ? allCities.length : 0}
+            </Text>
+            {allCities && allCities.length > 0 && (
+              <Text style={{ color: "black", fontSize: 14, margin: 10 }}>
+                First few cities: {allCities.slice(0, 3).join(", ")}
+              </Text>
+            )}
 
+            <View style={{ width: "100%", marginVertical: 16 }}>
+              {/* Custom Dropdown Button */}
+              <TouchableOpacity
+                style={{
+                  width: "80%",
+                  height: 50,
+                  backgroundColor: "#FFF",
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: "#444",
+                  alignSelf: "center",
+                  justifyContent: "center",
+                  paddingHorizontal: 15,
+                }}
+                onPress={() => setModalVisible(true)}
+              >
+                <Text style={{ color: "#444", fontSize: 16 }}>{selectedCity || "Choose the city"}</Text>
+              </TouchableOpacity>
+
+              {/* Modal for City Selection */}
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "rgba(0,0,0,0.5)",
+                  }}
+                >
+                  <View
+                    style={{
+                      backgroundColor: "white",
+                      borderRadius: 10,
+                      padding: 20,
+                      width: "80%",
+                      maxHeight: "70%",
+                    }}
+                  >
+                    <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 15, textAlign: "center" }}>
+                      Select a City
+                    </Text>
+
+                    <FlatList
+                      data={
+                        allCities && allCities.length > 0
+                          ? allCities
+                          : ["London", "Paris", "New York", "Tokyo", "Sydney"]
+                      }
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={{
+                            padding: 15,
+                            borderBottomWidth: 1,
+                            borderBottomColor: "#eee",
+                          }}
+                          onPress={() => handleCitySelect(item)}
+                        >
+                          <Text style={{ fontSize: 16 }}>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+
+                    <TouchableOpacity
+                      style={{
+                        marginTop: 15,
+                        padding: 10,
+                        backgroundColor: "#1976d2",
+                        borderRadius: 5,
+                        alignItems: "center",
+                      }}
+                      onPress={() => setModalVisible(false)}
+                    >
+                      <Text style={{ color: "white", fontSize: 16 }}>Cancel</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+            </View>
             {/* Results: Correct and Wrong Cities */}
             <View style={[styles.container, { flexDirection: "row", alignContent: "space-between" }]}>
               <View style={styles.resultcontainer}>
