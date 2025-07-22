@@ -14,17 +14,18 @@ export default function Api({ navigation, route }) {
   const { selectedCity: contextSelectedCity } = useContext(Context);
 
   const [selectedCity, setSelectedCity] = useState(contextSelectedCity || route.params); //selected city - prioritize context over route params
-  //const [allCities, setAllCities] = useState(createCities()); //dropdown data
-  // const citiesDropdownRef = useRef({});
+
   const [cityTemp, setCityTemp] = useState(null); //selected city
   const [weather, setWeather] = useState({}); //selected city
   const [cityDetails, setCityDetails] = useState([]);
 
   useEffect(() => {
-    //  console.log("countryDataSmallAPI", countryDataSmall);
+    console.log("city in weather ", selectedCity);
     //   console.log("createCities() API", createCities());
     getWeatherFromApi();
-    ToastAndroid.showWithGravity(selectedCity, ToastAndroid.LONG, ToastAndroid.CENTER);
+    if (selectedCity) {
+      ToastAndroid.showWithGravity(selectedCity, ToastAndroid.LONG, ToastAndroid.CENTER);
+    }
   }, [selectedCity]);
 
   // Update selectedCity when context changes
@@ -36,32 +37,52 @@ export default function Api({ navigation, route }) {
   }, [contextSelectedCity]);
 
   const getWeatherFromApi = async () => {
-    let response = await fetch(
-      "https://api.openweathermap.org/data/2.5/weather?q=" +
-        selectedCity +
-        "&appid=3f2e5dbaf5cf57927bf90f6b1acf3206&units=metric"
-    );
+    // Don't make API call if no city is selected
+    if (!selectedCity || selectedCity === null) {
+      console.log("No city selected, skipping API call");
+      return;
+    }
 
-    console.log("response", response);
-    let json = await response.json();
+    try {
+      let response = await fetch(
+        "https://api.openweathermap.org/data/2.5/weather?q=" +
+          selectedCity +
+          "&appid=3f2e5dbaf5cf57927bf90f6b1acf3206&units=metric"
+      );
 
-    setWeather(json);
-    console.log("weather", weather);
-    setCityTemp(json.main.temp);
-    setCityDetails([
-      json.main.temp,
-      json.main.humidity,
-      json.main.pressure,
-      json.main.temp_max,
-      json.main.temp_min,
-      json.weather[0].description,
-      json.weather[0].icon,
-      json.name,
-      json.sys.country,
-      json.sys.sunrise,
-      json.sys.sunset,
-    ]);
-    console.log("weather json", json);
+      console.log("response", response);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      let json = await response.json();
+
+      setWeather(json);
+      console.log("weather", weather);
+
+      // Check if json.main exists before accessing properties
+      if (json.main) {
+        setCityTemp(json.main.temp);
+        setCityDetails([
+          json.main.temp,
+          json.main.humidity,
+          json.main.pressure,
+          json.main.temp_max,
+          json.main.temp_min,
+          json.weather?.[0]?.description || "N/A",
+          json.weather?.[0]?.icon || "N/A",
+          json.name,
+          json.sys?.country || "N/A",
+          json.sys?.sunrise || "N/A",
+          json.sys?.sunset || "N/A",
+        ]);
+      }
+      console.log("weather json", json);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+      ToastAndroid.showWithGravity("Error fetching weather data", ToastAndroid.LONG, ToastAndroid.CENTER);
+    }
   };
 
   const Section = ({ children, title }) => {
@@ -76,26 +97,6 @@ export default function Api({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <Section style={styles.sectionTitle} title=" Choose a city to see the weather"></Section>
 
-      {/* <SelectDropdown
-        ref={citiesDropdownRef}
-        data={allCities}
-        onSelect={(selectedItem, index) => {
-          setSelectedCity(selectedItem);
-        }}
-        defaultButtonText={"Select city"}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          //https://www.npmjs.com/package/react-native-select-dropdown
-          // text represented after item is selected
-          // if data array is an array of objects then return selectedItem.property to render after item is selected
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          // text represented for each item in dropdown
-          // if data array is an array of objects then return item.property to represent item in dropdown
-          // console.log('rowTextForSelection', item);
-          return item;
-        }}
-      /> */}
       <View>
         <Text style={styles.text}>
           The Temperature in {selectedCity === null ? "no city selected" : selectedCity} is {cityTemp}C

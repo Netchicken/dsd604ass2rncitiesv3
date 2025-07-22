@@ -19,18 +19,12 @@ export default function GamePlay({ navigation }) {
   const styles = useGamePlayStyles();
 
   // Get context for sharing selected city with Api component
-  const { setSelectedCity: setContextSelectedCity } = useContext(Context);
+  const { selectedCity, setSelectedCity } = useContext(Context);
 
   // State for all country data and dropdown cities
   const [allData] = useState(countryDataSmall);
   const [allCities, setAllCities] = useState(dropdownCitiesData());
 
-  // useState(() => {
-  //   console.log("Initializing allCities with dropdownCitiesData()");
-  //   const cities = dropdownCitiesData();
-  //   console.log("Cities loaded:", cities?.length, "First few:", cities?.slice(0, 3));
-  //   return cities;
-  // });
   const [gameData, setGameData] = useState({
     CountryName: "Start",
     CapitalName: "Start",
@@ -39,7 +33,6 @@ export default function GamePlay({ navigation }) {
     ContinentName: "Start",
   }); //holds the selected country details
 
-  const [selectedCity, setSelectedCity] = useState(null);
   const [number, setNumber] = useState(0); //random number
   const [modalVisible, setModalVisible] = useState(false);
   // State for correct and wrong answers
@@ -83,8 +76,7 @@ export default function GamePlay({ navigation }) {
       if (selectedCity === gameData.CapitalName) {
         ToastAndroid.showWithGravity("You win! The city is " + selectedCity, ToastAndroid.LONG, ToastAndroid.CENTER);
         setCitiesCorrect((prev) => [...prev, selectedCity]);
-        // Set the correct city in context so Api component can use it
-        setContextSelectedCity(selectedCity);
+        // City is already in context, no need to set it again since we're using context directly
       } else {
         ToastAndroid.showWithGravity(
           `You are wrong! The city is ${gameData.CapitalName}, you said ${selectedCity}`,
