@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import GamePlay from "./Components/GamePlay";
 import Api from "./Components/Api";
+import Database from "./Components/Database"; // Import the Database component
 import { ContextProvider } from "./Operations/Context";
 
 const Stack = createStackNavigator();
@@ -30,6 +31,7 @@ const App = () => {
           >
             <Stack.Screen name="Guess The City" component={GamePlay} options={{ title: "Home" }} />
             <Stack.Screen name="Weather" component={Api} options={{ title: "Weather" }} />
+            <Stack.Screen name="Database" component={Database} options={{ title: "Database" }} />
           </Stack.Navigator>
         </NavigationContainer>
       </ContextProvider>

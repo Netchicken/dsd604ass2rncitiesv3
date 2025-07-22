@@ -276,6 +276,48 @@ export const useGamePlayStyles = () => {
           marginVertical: vs(5),
           textAlign: "left",
         },
+
+        // Database-specific styles
+        databaseInfoContainer: {
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          borderRadius: rs(10),
+          margin: rs(10),
+          padding: rs(15),
+          alignItems: "center",
+        },
+        databaseText: {
+          fontSize: rs(16),
+          fontWeight: "600",
+          color: "#1976d2",
+          marginVertical: vs(2),
+        },
+        databaseListContainer: {
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          borderRadius: rs(10),
+          margin: rs(10),
+          padding: rs(10),
+          minHeight: vs(200),
+        },
+        databaseListItem: {
+          backgroundColor: "#f0f0f0",
+          borderRadius: rs(8),
+          padding: rs(12),
+          marginVertical: vs(5),
+          borderLeftWidth: rs(4),
+          borderLeftColor: "#1976d2",
+        },
+        databaseListText: {
+          fontSize: rs(16),
+          fontWeight: "500",
+          color: "#333",
+        },
+        databaseEmptyText: {
+          fontSize: rs(16),
+          color: "#666",
+          textAlign: "center",
+          fontStyle: "italic",
+          marginTop: vs(20),
+        },
       }),
     []
   );

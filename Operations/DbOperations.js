@@ -5,7 +5,7 @@ import SQLite from "react-native-sqlite-storage";
 export const deleteDatabase = () => {
   console.log("Deleting database...");
   SQLite.deleteDatabase(
-    { name: "calcDB.db", location: "default" },
+    { name: "cityDB.db", location: "default" },
     () => {
       console.log("Database deleted successfully");
     },
@@ -18,7 +18,7 @@ export const deleteDatabase = () => {
 // CreateTable creates the SQLite table if it does not already exist.
 // This function is called once when the app starts to ensure the table is ready for use.
 export const createTable = (db) => {
-  const createString = "CREATE TABLE IF NOT EXISTS AllAnswers(Id INTEGER PRIMARY KEY AUTOINCREMENT, answer TEXT)";
+  const createString = "CREATE TABLE IF NOT EXISTS Countries(Id INTEGER PRIMARY KEY AUTOINCREMENT, country TEXT)";
 
   db.transaction(
     (tx) => {
@@ -34,7 +34,7 @@ export const createTable = (db) => {
 //loadDB opens the SQLite database and returns the database object.
 export const loadDB = () => {
   return SQLite.openDatabase(
-    { name: "calcDB.db", location: "default" },
+    { name: "cityDB.db", location: "default" },
     () => {
       console.log("DB opened for real");
     },
@@ -51,7 +51,7 @@ export const addItem = (calcResult, db) => {
   db.transaction(
     (tx) => {
       tx.executeSql(
-        "INSERT INTO AllAnswers (answer) VALUES (?)",
+        "INSERT INTO Countries (country) VALUES (?)",
         [calcResult],
         () => {
           console.log("Item added to database:", calcResult);
@@ -75,7 +75,7 @@ export const clearDatabase = (db) => {
   db.transaction(
     (tx) => {
       tx.executeSql(
-        "DELETE FROM AllAnswers;",
+        "DELETE FROM Countries;",
         [],
         () => {
           console.log("All data cleared from database.");
@@ -100,7 +100,7 @@ export const clearDatabase = (db) => {
 export const getFromDB = (db, callback) => {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT Id, answer FROM AllAnswers;",
+      "SELECT Id, country FROM Countries;",
       [],
       (tx, results) => {
         let rows = [];

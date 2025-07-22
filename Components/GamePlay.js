@@ -181,6 +181,7 @@ export default function GamePlay({ navigation }) {
             {/* Navigation Buttons at the bottom */}
             <View style={[styles.container, styles.navigationContainer]}>
               <Button title="Weather" onPress={() => navigation.navigate("Weather")} color="#1976d2" />
+              <Button title="Database" onPress={() => navigation.navigate("Database")} color="#1976d2" />
             </View>
           </ScrollView>
         </SafeAreaView>
