@@ -26,7 +26,7 @@ export default function Api({ navigation, route }) {
   const getWeatherFromApi = async () => {
     // Don't make API call if no city is selected
     if (!selectedCity || selectedCity === null) {
-      console.log("No city selected, skipping API call");
+      console.log("No city selected, skipping API call", selectedCity);
       return;
     }
 
@@ -40,7 +40,8 @@ export default function Api({ navigation, route }) {
       console.log("response", response);
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        console.error(`HTTP error! status: ${response.status}`);
+        return;
       }
 
       let json = await response.json();

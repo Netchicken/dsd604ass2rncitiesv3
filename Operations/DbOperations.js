@@ -100,14 +100,20 @@ export const clearDatabase = (db) => {
 export const getFromDB = (db, callback) => {
   db.transaction((tx) => {
     tx.executeSql(
-      "SELECT Id, country FROM Countries;",
+      "SELECT DISTINCT country FROM Countries ORDER BY country;",
       [],
       (tx, results) => {
         let rows = [];
+
         for (let i = 0; i < results.rows.length; i++) {
-          rows.push(results.rows.item(i));
+          const row = results.rows.item(i);
+          // Add an ID for consistency (since DISTINCT removes original IDs)
+          rows.push({
+            Id: i + 1,
+            country: row.country,
+          });
         }
-        console.log("Fetched items from database:", rows);
+        console.log("Fetched unique items from database:", rows);
         if (callback) callback(rows);
       },
       (tx, error) => {

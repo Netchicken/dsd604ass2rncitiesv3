@@ -168,10 +168,6 @@ const DisplayDB = ({ navigation, route }) => {
             <Section title="Wrong Cities Database" />
 
             <View style={styles.databaseInfoContainer}>
-              <Text style={styles.databaseText}>Cities in queue: {selectedCityList.length}</Text>
-              <Text style={styles.databaseText}>
-                {selectedCityList.length > 0 ? `Processing: ${selectedCityList.join(", ")}` : "No cities to process"}
-              </Text>
               <Text style={styles.databaseText}>Click any city to edit</Text>
             </View>
 
