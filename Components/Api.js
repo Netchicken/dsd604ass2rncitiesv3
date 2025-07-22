@@ -95,14 +95,11 @@ export default function Api({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Section style={styles.sectionTitle} title=" Choose a city to see the weather"></Section>
+      <Section style={styles.sectionTitle} title={` The Weather in ${selectedCity}  `}></Section>
 
       <View>
-        <Text style={styles.text}>
-          The Temperature in {selectedCity === null ? "no city selected" : selectedCity} is {cityTemp}C
-        </Text>
-
         <View>
+          <Text style={styles.text}>The Temperature is {cityTemp}C </Text>
           <Text style={styles.text}>The Humidity is {cityDetails[1]}%</Text>
           <Text style={styles.text}>The Preasure is {cityDetails[2]}</Text>
           <Text style={styles.text}>The Max Temperature is {cityDetails[3]}C</Text>
