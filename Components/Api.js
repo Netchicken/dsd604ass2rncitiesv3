@@ -37,17 +37,17 @@ export default function Api({ navigation, route }) {
           "&appid=3f2e5dbaf5cf57927bf90f6b1acf3206&units=metric"
       );
 
-      console.log("response", response);
+      // console.log("response", response);
 
       if (!response.ok) {
-        console.error(`HTTP error! status: ${response.status}`);
+        //  console.error(`HTTP error! status: ${response.status}`);
         return;
       }
 
       let json = await response.json();
 
       setWeather(json);
-      console.log("weather", weather);
+      //  console.log("weather", weather);
 
       // Check if json.main exists before accessing properties
       if (json.main) {
