@@ -1,4 +1,3 @@
-//https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React, { useState, useContext, useEffect, useRef } from "react";
 import {
   SafeAreaView,
@@ -19,14 +18,19 @@ import { Context } from "../Operations/Context"; // Import the context for datab
 export default function GamePlay({ navigation }) {
   const styles = useGamePlayStyles();
 
+  // Get context for sharing selected city with Api component
+  const { setSelectedCity: setContextSelectedCity } = useContext(Context);
+
   // State for all country data and dropdown cities
   const [allData] = useState(countryDataSmall);
-  const [allCities, setAllCities] = useState(() => {
-    console.log("Initializing allCities with dropdownCitiesData()");
-    const cities = dropdownCitiesData();
-    console.log("Cities loaded:", cities?.length, "First few:", cities?.slice(0, 3));
-    return cities;
-  });
+  const [allCities, setAllCities] = useState(dropdownCitiesData());
+
+  // useState(() => {
+  //   console.log("Initializing allCities with dropdownCitiesData()");
+  //   const cities = dropdownCitiesData();
+  //   console.log("Cities loaded:", cities?.length, "First few:", cities?.slice(0, 3));
+  //   return cities;
+  // });
   const [gameData, setGameData] = useState({
     CountryName: "Start",
     CapitalName: "Start",
@@ -42,13 +46,10 @@ export default function GamePlay({ navigation }) {
   const [citiesCorrect, setCitiesCorrect] = useState([]);
   const [citiesWrong, setCitiesWrong] = useState([]);
   // Ref for dropdown reset
-  const citiesDropdownRef = useRef({});
+  // const citiesDropdownRef = useRef({});
 
   // Handler: Load new random country/city for the game
   const onClickChooseCountry = () => {
-    console.log("Button pressed");
-    // Update dropdown data (if needed)
-    console.log("Updating cities dropdown data", dropdownCitiesData());
     setAllCities(dropdownCitiesData());
 
     // Pick a random country
@@ -68,11 +69,6 @@ export default function GamePlay({ navigation }) {
     // Reset selected city
     setSelectedCity(null);
     setModalVisible(false);
-
-    // Reset dropdown selection
-    if (citiesDropdownRef.current && citiesDropdownRef.current.reset) {
-      citiesDropdownRef.current.reset();
-    }
   };
 
   // Handler: Select city from dropdown
@@ -87,6 +83,8 @@ export default function GamePlay({ navigation }) {
       if (selectedCity === gameData.CapitalName) {
         ToastAndroid.showWithGravity("You win! The city is " + selectedCity, ToastAndroid.LONG, ToastAndroid.CENTER);
         setCitiesCorrect((prev) => [...prev, selectedCity]);
+        // Set the correct city in context so Api component can use it
+        setContextSelectedCity(selectedCity);
       } else {
         ToastAndroid.showWithGravity(
           `You are wrong! The city is ${gameData.CapitalName}, you said ${selectedCity}`,

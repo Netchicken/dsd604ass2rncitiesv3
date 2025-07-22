@@ -1,15 +1,18 @@
 import React, { useState, useContext } from "react";
-// Create a context for the calculator state
-// This context will be used to share the calculation result across components
+// Create a context for sharing state across components
+// This context will be used to share data between GamePlay and Api components
 export const Context = React.createContext();
 
-// ContextProvider component to provide the calculator state to its children
+// ContextProvider component to provide shared state to its children
 // This component wraps the application and provides the context value
 export const ContextProvider = ({ children }) => {
-  console.log("CalcContextProvider opened");
+  console.log("ContextProvider opened");
   const [calcResult, setCalcResult] = useState("");
+  const [selectedCity, setSelectedCity] = useState(null);
 
-  return <Context.Provider value={{ calcResult, setCalcResult }}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={{ calcResult, setCalcResult, selectedCity, setSelectedCity }}>{children}</Context.Provider>
+  );
 };
 
 // Custom hook to use the calculator context

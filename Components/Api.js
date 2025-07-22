@@ -1,43 +1,39 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { SafeAreaView, StyleSheet, Text, View, ToastAndroid, Button } from "react-native";
 
-import { createCities, countryDataSmall } from "../assets/citiesSmall"; // Import the function to create cities
-import SelectDropdown from "react-native-select-dropdown";
+//import { createCities, countryDataSmall } from "../assets/citiesSmall"; // Import the function to create cities
+//import SelectDropdown from "react-native-select-dropdown";
+import { Context } from "../Operations/Context"; // Import the context
 
 export default function Api({ navigation, route }) {
   //https://home.openweathermap.org/
   //3f2e5dbaf5cf57927bf90f6b1acf3206   api key
   //https://openweathermap.org/current
 
-  const [selectedCity, setSelectedCity] = useState(route.params); //selected city
-  const [allCities, setAllCities] = useState(createCities()); //dropdown data
-  const citiesDropdownRef = useRef({});
+  // Get selected city from context
+  const { selectedCity: contextSelectedCity } = useContext(Context);
+
+  const [selectedCity, setSelectedCity] = useState(contextSelectedCity || route.params); //selected city - prioritize context over route params
+  //const [allCities, setAllCities] = useState(createCities()); //dropdown data
+  // const citiesDropdownRef = useRef({});
   const [cityTemp, setCityTemp] = useState(null); //selected city
   const [weather, setWeather] = useState({}); //selected city
   const [cityDetails, setCityDetails] = useState([]);
 
-  //https://npm.io/package/react-native-weather-api   ???????????????????
-
-  //const selectDataHandler = () => {
-  //api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid={API key}
-  //https://openweathermap.org/current
-
-  //https://api.openweathermap.org/data/2.5/weather?q=London&appid=3f2e5dbaf5cf57927bf90f6b1acf3206
-
-  //https://programmingwithmosh.com/react-native/make-api-calls-in-react-native-using-fetch/
-
-  //morioh.com/p/014f4cd6df5a
-
-  //https://github.com/MuhammadTaimour95/Weather-App-React-Native?ref=morioh.com&utm_source=morioh.com
-
-  //www.youtube.com/watch?v=H5xIWY7pL-k
-
   useEffect(() => {
-    console.log("countryDataSmallAPI", countryDataSmall);
-    console.log("createCities() API", createCities());
+    //  console.log("countryDataSmallAPI", countryDataSmall);
+    //   console.log("createCities() API", createCities());
     getWeatherFromApi();
     ToastAndroid.showWithGravity(selectedCity, ToastAndroid.LONG, ToastAndroid.CENTER);
   }, [selectedCity]);
+
+  // Update selectedCity when context changes
+  useEffect(() => {
+    if (contextSelectedCity) {
+      setSelectedCity(contextSelectedCity);
+      console.log("Selected city updated from context:", contextSelectedCity);
+    }
+  }, [contextSelectedCity]);
 
   const getWeatherFromApi = async () => {
     let response = await fetch(
@@ -80,7 +76,7 @@ export default function Api({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <Section style={styles.sectionTitle} title=" Choose a city to see the weather"></Section>
 
-      <SelectDropdown
+      {/* <SelectDropdown
         ref={citiesDropdownRef}
         data={allCities}
         onSelect={(selectedItem, index) => {
@@ -99,7 +95,7 @@ export default function Api({ navigation, route }) {
           // console.log('rowTextForSelection', item);
           return item;
         }}
-      />
+      /> */}
       <View>
         <Text style={styles.text}>
           The Temperature in {selectedCity === null ? "no city selected" : selectedCity} is {cityTemp}C
