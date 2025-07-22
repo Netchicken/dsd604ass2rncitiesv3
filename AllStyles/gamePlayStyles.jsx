@@ -309,7 +309,7 @@ export const useGamePlayStyles = () => {
         databaseListText: {
           fontSize: rs(16),
           fontWeight: "500",
-          color: "#333",
+          color: "#1976d2",
         },
         databaseEmptyText: {
           fontSize: rs(16),

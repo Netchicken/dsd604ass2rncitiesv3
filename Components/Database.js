@@ -54,8 +54,28 @@ const DisplayDB = ({ navigation, route }) => {
   // Add item when selectedCity changes (for storing correct guesses)
   useEffect(() => {
     if (selectedCity && selectedCity !== null) {
-      addItem(selectedCity, db);
-      getFromDB(db, setListAnswers);
+      // Check database directly instead of React state
+      db.transaction((tx) => {
+        tx.executeSql(
+          "SELECT COUNT(*) as count FROM Countries WHERE country = ?",
+          [selectedCity],
+          (tx, results) => {
+            const count = results.rows.item(0).count;
+            if (count === 0) {
+              // City doesn't exist, safe to add
+              addItem(selectedCity, db);
+              console.log("✅ Adding new city:", selectedCity);
+            } else {
+              console.log("ℹ️ City already exists in database:", selectedCity);
+            }
+            // Always refresh the list
+            getFromDB(db, setListAnswers);
+          },
+          (tx, error) => {
+            console.log("❌ Error checking for existing city:", error);
+          }
+        );
+      });
     }
   }, [selectedCity]);
 
@@ -153,10 +173,10 @@ const DisplayDB = ({ navigation, route }) => {
                 listAnswers.map((item, index) => (
                   <Pressable
                     key={item.Id}
-                    onPress={() => editItem(item.Id, item.answer)}
+                    onPress={() => editItem(item.Id, item.country)}
                     style={styles.databaseListItem}
                   >
-                    <Text style={styles.databaseListText}>{item.answer}</Text>
+                    <Text style={styles.databaseListText}>{item.country}</Text>
                   </Pressable>
                 ))
               ) : (
