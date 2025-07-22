@@ -7,8 +7,9 @@ export const Context = React.createContext();
 // This component wraps the application and provides the context value
 export const ContextProvider = ({ children }) => {
   console.log("ContextProvider opened");
- 
+
   const [selectedCity, setSelectedCity] = useState(null);
+  const [correctCity, setCorrectCity] = useState(null); // Add this for database
 
   // Debug wrapper for setSelectedCity
   const setSelectedCityWithLogging = (city) => {
@@ -16,9 +17,22 @@ export const ContextProvider = ({ children }) => {
     setSelectedCity(city);
   };
 
+  // Debug wrapper for setCorrectCity
+  const setCorrectCityWithLogging = (city) => {
+    console.log("Context: Setting correct city to:", city);
+    setCorrectCity(city);
+  };
+
   return (
-    <Context.Provider value={{ selectedCity, setSelectedCity: setSelectedCityWithLogging }}>{children}</Context.Provider>
+    <Context.Provider
+      value={{
+        selectedCity,
+        setSelectedCity: setSelectedCityWithLogging,
+        correctCity,
+        setCorrectCity: setCorrectCityWithLogging,
+      }}
+    >
+      {children}
+    </Context.Provider>
   );
 };
-
-

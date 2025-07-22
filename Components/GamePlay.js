@@ -19,7 +19,11 @@ export default function GamePlay({ navigation }) {
   const styles = useGamePlayStyles();
 
   // Get context for sharing selected city with Api component
-  const { selectedCity, setSelectedCity } = useContext(Context);
+  const contextValue = useContext(Context);
+  const selectedCity = contextValue?.selectedCity || null;
+  const setSelectedCity = contextValue?.setSelectedCity || (() => {});
+  const correctCity = contextValue?.correctCity || null;
+  const setCorrectCity = contextValue?.setCorrectCity || (() => {});
 
   // State for all country data and dropdown cities
   const [allData] = useState(countryDataSmall);
@@ -84,6 +88,8 @@ export default function GamePlay({ navigation }) {
           ToastAndroid.CENTER
         );
         setCitiesWrong((prev) => [...prev, selectedCity]);
+        setCorrectCity;
+        selectedCity; // Update context with the selected city
         // Optionally: insertData(selectedCity);
       }
     }
@@ -98,7 +104,7 @@ export default function GamePlay({ navigation }) {
   const Section = ({ title }) => (
     <View style={styles.sectionContainer}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      <Text>The city is {gameData.CapitalName || ""}</Text>
+      {/* <Text>The city is {gameData.CapitalName || ""}</Text> */}
       <Text>The Country is {gameData.CountryName || ""}</Text>
       <Text>The Continent is {gameData.ContinentName || ""}</Text>
     </View>

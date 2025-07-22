@@ -9,8 +9,9 @@ export default function Api({ navigation, route }) {
   //3f2e5dbaf5cf57927bf90f6b1acf3206   api key
   //https://openweathermap.org/current
 
-  // Get selected city from context
-  const { selectedCity: contextSelectedCity } = useContext(Context);
+  // Fix context usage - use safe property access
+  const contextValue = useContext(Context);
+  const contextSelectedCity = contextValue?.selectedCity || null;
 
   const [selectedCity, setSelectedCity] = useState(contextSelectedCity || route.params); //selected city - prioritize context over route params
   const [cityTemp, setCityTemp] = useState(null); //selected city

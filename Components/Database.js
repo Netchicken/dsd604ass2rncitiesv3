@@ -19,8 +19,8 @@ const DisplayDB = ({ navigation, route }) => {
   const [listAnswers, setListAnswers] = useState([]);
 
   // Use context - fix the context usage to match your current Context.js
-  const { selectedCity } = useContext(Context);
-
+  const contextValue = useContext(Context);
+  const selectedCity = contextValue?.selectedCity || null;
   // Edit dialog state
   const [editDialogVisible, setEditDialogVisible] = useState(false);
   const [editOldValue, setEditOldValue] = useState("");
