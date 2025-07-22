@@ -18,16 +18,18 @@ const DisplayDB = ({ navigation, route }) => {
   // State management
   const [listAnswers, setListAnswers] = useState([]);
 
-  // Use context - fix the context usage to match your current Context.js
+  // Use context - get the city list and helper functions
   const contextValue = useContext(Context);
-  const selectedCity = contextValue?.selectedCity || null;
+  const selectedCityList = contextValue?.selectedCityList || [];
+  const clearCityList = contextValue?.clearCityList || (() => {});
+
   // Edit dialog state
   const [editDialogVisible, setEditDialogVisible] = useState(false);
   const [editOldValue, setEditOldValue] = useState("");
   const [editNewValue, setEditNewValue] = useState("");
   const [editId, setEditId] = useState(null);
 
-  console.log("Database selectedCity:", selectedCity);
+  console.log("Database selectedCityList:", selectedCityList);
 
   // Function to show toast message
   const showToast = () => {
@@ -51,33 +53,44 @@ const DisplayDB = ({ navigation, route }) => {
     getFromDB(db, setListAnswers);
   }, []);
 
-  // Add item when selectedCity changes (for storing correct guesses)
+  // Process city list when it changes (for storing wrong guesses)
   useEffect(() => {
-    if (selectedCity && selectedCity !== null) {
-      // Check database directly instead of React state
-      db.transaction((tx) => {
-        tx.executeSql(
-          "SELECT COUNT(*) as count FROM Countries WHERE country = ?",
-          [selectedCity],
-          (tx, results) => {
-            const count = results.rows.item(0).count;
-            if (count === 0) {
-              // City doesn't exist, safe to add
-              addItem(selectedCity, db);
-              console.log("✅ Adding new city:", selectedCity);
-            } else {
-              console.log("ℹ️ City already exists in database:", selectedCity);
+    if (selectedCityList && selectedCityList.length > 0) {
+      console.log("Processing city list:", selectedCityList);
+
+      // Process each city in the list
+      selectedCityList.forEach((city) => {
+        // Check if city already exists in database before adding
+        db.transaction((tx) => {
+          tx.executeSql(
+            "SELECT COUNT(*) as count FROM Countries WHERE country = ?",
+            [city],
+            (tx, results) => {
+              const count = results.rows.item(0).count;
+              if (count === 0) {
+                // City doesn't exist, safe to add
+                addItem(city, db);
+                console.log("✅ Adding new wrong city to database:", city);
+              } else {
+                console.log("ℹ️ Wrong city already exists in database:", city);
+              }
+            },
+            (tx, error) => {
+              console.log("❌ Error checking for existing city:", error);
             }
-            // Always refresh the list
-            getFromDB(db, setListAnswers);
-          },
-          (tx, error) => {
-            console.log("❌ Error checking for existing city:", error);
-          }
-        );
+          );
+        });
       });
+
+      // Refresh the list after processing all cities
+      setTimeout(() => {
+        getFromDB(db, setListAnswers);
+        // Clear the city list after processing
+        clearCityList();
+        console.log("✅ City list processed and cleared");
+      }, 500); // Small delay to ensure all database operations complete
     }
-  }, [selectedCity]);
+  }, [selectedCityList]);
 
   // Edit item function
   const editItem = (Id, oldValue) => {
@@ -152,10 +165,13 @@ const DisplayDB = ({ navigation, route }) => {
       <View style={styles.container}>
         <SafeAreaView>
           <ScrollView>
-            <Section title="Correct Cities Database" />
+            <Section title="Wrong Cities Database" />
 
             <View style={styles.databaseInfoContainer}>
-              <Text style={styles.databaseText}>Latest City: {selectedCity || "None"}</Text>
+              <Text style={styles.databaseText}>Cities in queue: {selectedCityList.length}</Text>
+              <Text style={styles.databaseText}>
+                {selectedCityList.length > 0 ? `Processing: ${selectedCityList.join(", ")}` : "No cities to process"}
+              </Text>
               <Text style={styles.databaseText}>Click any city to edit</Text>
             </View>
 

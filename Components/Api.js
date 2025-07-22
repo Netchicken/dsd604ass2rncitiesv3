@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, ScrollView, Text, View, ToastAndroid, Button, ImageBackground } from "react-native";
-import { Context } from "../Operations/Context"; // Import the context
 import { useGamePlayStyles } from "../AllStyles/gamePlayStyles"; // Use same styles
 
 export default function Api({ navigation, route }) {
@@ -9,11 +8,8 @@ export default function Api({ navigation, route }) {
   //3f2e5dbaf5cf57927bf90f6b1acf3206   api key
   //https://openweathermap.org/current
 
-  // Fix context usage - use safe property access
-  const contextValue = useContext(Context);
-  const contextSelectedCity = contextValue?.selectedCity || null;
-
-  const [selectedCity, setSelectedCity] = useState(contextSelectedCity || route.params); //selected city - prioritize context over route params
+  // Use route params for selected city (passed from GamePlay's localSelectedCity)
+  const [selectedCity, setSelectedCity] = useState(route.params?.selectedCity || null); //selected city from route params
   const [cityTemp, setCityTemp] = useState(null); //selected city
   const [weather, setWeather] = useState({}); //selected city
   const [cityDetails, setCityDetails] = useState([]);
@@ -26,14 +22,6 @@ export default function Api({ navigation, route }) {
       ToastAndroid.showWithGravity(selectedCity, ToastAndroid.LONG, ToastAndroid.CENTER);
     }
   }, [selectedCity]);
-
-  // Update selectedCity when context changes
-  useEffect(() => {
-    if (contextSelectedCity) {
-      setSelectedCity(contextSelectedCity);
-      console.log("Selected city updated from context:", contextSelectedCity);
-    }
-  }, [contextSelectedCity]);
 
   const getWeatherFromApi = async () => {
     // Don't make API call if no city is selected

@@ -18,12 +18,20 @@ import { Context } from "../Operations/Context"; // Import the context for datab
 export default function GamePlay({ navigation }) {
   const styles = useGamePlayStyles();
 
-  // Get context for sharing selected city with Api component
+  // Get context for sharing selected city list with Database component
   const contextValue = useContext(Context);
-  const selectedCity = contextValue?.selectedCity || null;
-  const setSelectedCity = contextValue?.setSelectedCity || (() => {});
+  const selectedCityList = contextValue?.selectedCityList || [];
+  const addCityToList = contextValue?.addCityToList || (() => {});
+  const clearCityList = contextValue?.clearCityList || (() => {});
   const correctCity = contextValue?.correctCity || null;
   const setCorrectCity = contextValue?.setCorrectCity || (() => {});
+  const citiesCorrect = contextValue?.citiesCorrect || [];
+  const addCorrectCity = contextValue?.addCorrectCity || (() => {});
+  const citiesWrong = contextValue?.citiesWrong || [];
+  const addWrongCity = contextValue?.addWrongCity || (() => {});
+
+  // Local state for current game selection (separate from context list)
+  const [localSelectedCity, setLocalSelectedCity] = useState(null);
 
   // State for all country data and dropdown cities
   const [allData] = useState(countryDataSmall);
@@ -39,9 +47,7 @@ export default function GamePlay({ navigation }) {
 
   const [number, setNumber] = useState(0); //random number
   const [modalVisible, setModalVisible] = useState(false);
-  // State for correct and wrong answers
-  const [citiesCorrect, setCitiesCorrect] = useState([]);
-  const [citiesWrong, setCitiesWrong] = useState([]);
+  // Note: citiesCorrect and citiesWrong are now managed in Context
   // Ref for dropdown reset
   // const citiesDropdownRef = useRef({});
 
@@ -63,42 +69,47 @@ export default function GamePlay({ navigation }) {
       ContinentName: selecteditem.ContinentName,
     });
 
-    // Reset selected city
-    setSelectedCity(null);
+    // Reset local selected city
+    setLocalSelectedCity(null);
     setModalVisible(false);
   };
 
-  // Handler: Select city from dropdown
+  // Handler: Select city from dropdown (uses local state)
   const handleCitySelect = (city) => {
-    setSelectedCity(city);
+    setLocalSelectedCity(city);
     setModalVisible(false);
   };
 
   // Handler: Check if the selected city is correct or wrong
   const CheckForWinnerLoser = () => {
-    if (selectedCity && selectedCity !== "" && gameData.CapitalName !== "Start") {
-      if (selectedCity === gameData.CapitalName) {
-        ToastAndroid.showWithGravity("You win! The city is " + selectedCity, ToastAndroid.LONG, ToastAndroid.CENTER);
-        setCitiesCorrect((prev) => [...prev, selectedCity]);
-        // City is already in context, no need to set it again since we're using context directly
-      } else {
+    if (localSelectedCity && localSelectedCity !== "" && gameData.CapitalName !== "Start") {
+      if (localSelectedCity === gameData.CapitalName) {
         ToastAndroid.showWithGravity(
-          `You are wrong! The city is ${gameData.CapitalName}, you said ${selectedCity}`,
+          "You win! The city is " + localSelectedCity,
           ToastAndroid.LONG,
           ToastAndroid.CENTER
         );
-        setCitiesWrong((prev) => [...prev, selectedCity]);
-        setCorrectCity;
-        selectedCity; // Update context with the selected city
-        // Optionally: insertData(selectedCity);
+        addCorrectCity(localSelectedCity);
+        // Set correct city in context for API weather lookup
+        setCorrectCity(localSelectedCity);
+      } else {
+        ToastAndroid.showWithGravity(
+          `You are wrong! The city is ${gameData.CapitalName}, you said ${localSelectedCity}`,
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER
+        );
+        addWrongCity(localSelectedCity);
+        // Add wrong city to context list for database storage
+        addCityToList(localSelectedCity);
       }
     }
   };
-  // Effect: Run winner/loser check when selectedCity changes
+
+  // Effect: Run winner/loser check when local selection changes
   useEffect(() => {
-    if (selectedCity) CheckForWinnerLoser();
+    if (localSelectedCity) CheckForWinnerLoser();
     // eslint-disable-next-line
-  }, [selectedCity]);
+  }, [localSelectedCity]);
 
   // Section component for displaying game info
   const Section = ({ title }) => (
@@ -128,7 +139,7 @@ export default function GamePlay({ navigation }) {
             <View style={styles.dropdownContainer}>
               {/* Custom Dropdown Button */}
               <TouchableOpacity style={styles.dropdownButton} onPress={() => setModalVisible(true)}>
-                <Text style={styles.dropdownButtonText}>{selectedCity || "Choose the city"}</Text>
+                <Text style={styles.dropdownButtonText}>{localSelectedCity || "Choose the city"}</Text>
               </TouchableOpacity>
 
               {/* Modal for City Selection */}
@@ -186,7 +197,11 @@ export default function GamePlay({ navigation }) {
 
             {/* Navigation Buttons at the bottom */}
             <View style={[styles.container, styles.navigationContainer]}>
-              <Button title="Weather" onPress={() => navigation.navigate("Weather")} color="#1976d2" />
+              <Button
+                title="Weather"
+                onPress={() => navigation.navigate("Weather", { selectedCity: localSelectedCity })}
+                color="#1976d2"
+              />
               <Button title="Database" onPress={() => navigation.navigate("Database")} color="#1976d2" />
             </View>
           </ScrollView>
