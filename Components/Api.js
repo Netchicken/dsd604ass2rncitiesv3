@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
-import { SafeAreaView, StyleSheet, Text, View, ToastAndroid, Button } from "react-native";
-
-//import { createCities, countryDataSmall } from "../assets/citiesSmall"; // Import the function to create cities
-//import SelectDropdown from "react-native-select-dropdown";
+import React, { useState, useEffect, useContext } from "react";
+import { SafeAreaView, ScrollView, Text, View, ToastAndroid, Button, ImageBackground } from "react-native";
 import { Context } from "../Operations/Context"; // Import the context
+import { useGamePlayStyles } from "../AllStyles/gamePlayStyles"; // Use same styles
 
 export default function Api({ navigation, route }) {
+  const styles = useGamePlayStyles();
   //https://home.openweathermap.org/
   //3f2e5dbaf5cf57927bf90f6b1acf3206   api key
   //https://openweathermap.org/current
@@ -14,7 +13,6 @@ export default function Api({ navigation, route }) {
   const { selectedCity: contextSelectedCity } = useContext(Context);
 
   const [selectedCity, setSelectedCity] = useState(contextSelectedCity || route.params); //selected city - prioritize context over route params
-
   const [cityTemp, setCityTemp] = useState(null); //selected city
   const [weather, setWeather] = useState({}); //selected city
   const [cityDetails, setCityDetails] = useState([]);
@@ -85,7 +83,7 @@ export default function Api({ navigation, route }) {
     }
   };
 
-  const Section = ({ children, title }) => {
+  const Section = ({ title }) => {
     return (
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>{title}</Text>
@@ -94,50 +92,39 @@ export default function Api({ navigation, route }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Section style={styles.sectionTitle} title={` The Weather in ${selectedCity}  `}></Section>
+    <ImageBackground resizeMode="cover" source={require("../assets/bgImage.png")} style={styles.image}>
+      <View style={styles.container}>
+        <SafeAreaView>
+          <ScrollView>
+            <Section title={`Weather in ${selectedCity || "No City Selected"}`} />
 
-      <View>
-        <View>
-          <Text style={styles.text}>The Temperature is {cityTemp}C </Text>
-          <Text style={styles.text}>The Humidity is {cityDetails[1]}%</Text>
-          <Text style={styles.text}>The Preasure is {cityDetails[2]}</Text>
-          <Text style={styles.text}>The Max Temperature is {cityDetails[3]}C</Text>
-          <Text style={styles.text}>The Min Temperature is {cityDetails[4]}C</Text>
-          <Text style={styles.text}>The Description is {cityDetails[5]}</Text>
-        </View>
-      </View>
+            {/* Weather Information Display */}
+            <View style={styles.weatherContainer}>
+              <View style={styles.weatherInfoContainer}>
+                <Text style={styles.weatherText}>Temperature: {cityTemp ? `${cityTemp}°C` : "N/A"}</Text>
+                <Text style={styles.weatherText}>Humidity: {cityDetails[1] ? `${cityDetails[1]}%` : "N/A"}</Text>
+                <Text style={styles.weatherText}>Pressure: {cityDetails[2] || "N/A"}</Text>
+                <Text style={styles.weatherText}>
+                  Max Temperature: {cityDetails[3] ? `${cityDetails[3]}°C` : "N/A"}
+                </Text>
+                <Text style={styles.weatherText}>
+                  Min Temperature: {cityDetails[4] ? `${cityDetails[4]}°C` : "N/A"}
+                </Text>
+                <Text style={styles.weatherText}>Description: {cityDetails[5] || "N/A"}</Text>
+                <Text style={styles.weatherText}>Country: {cityDetails[8] || "N/A"}</Text>
+              </View>
+            </View>
 
-      {/* Navigation Buttons at the bottom */}
-      <View style={{ flexDirection: "row", justifyContent: "space-around", paddingVertical: 20, width: "100%" }}>
-        <Button title="Home" onPress={() => navigation.navigate("Guess The City")} color="#1976d2" />
+            {/* Navigation Buttons at the bottom */}
+            <View style={[styles.container, styles.navigationContainer]}>
+              <Button title="Home" onPress={() => navigation.navigate("Guess The City")} color="#1976d2" />
+            </View>
+          </ScrollView>
+        </SafeAreaView>
       </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-    margin: 10,
-  },
-  container: {
-    flex: 1,
-    // justifyContent: 'center',
-    alignItems: "center",
-    color: "black",
-    // paddingTop: StatusBar.currentHeight,
-  },
-  sectionContainer: {
-    marginTop: 10,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: "600",
-  },
-});
 
 // {
 //   "coord": {

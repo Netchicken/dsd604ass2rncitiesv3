@@ -250,6 +250,32 @@ export const useGamePlayStyles = () => {
           justifyContent: "space-around",
           paddingVertical: vs(20),
         },
+
+        // Weather-specific styles for Api.js
+        weatherContainer: {
+          backgroundColor: "rgba(255, 255, 255, 0.9)",
+          borderRadius: rs(10),
+          margin: rs(10),
+          padding: rs(15),
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+        },
+        weatherInfoContainer: {
+          alignItems: "flex-start",
+        },
+        weatherText: {
+          fontSize: rs(16),
+          fontWeight: "600",
+          color: "#1976d2",
+          marginVertical: vs(5),
+          textAlign: "left",
+        },
       }),
     []
   );
